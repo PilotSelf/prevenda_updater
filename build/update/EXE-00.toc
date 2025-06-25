@@ -1,5 +1,5 @@
 ('C:\\Users\\crist\\OneDrive\\Documents\\GitHub\\prevenda_updater\\dist\\update.exe',
- True,
+ False,
  False,
  False,
  ['C:\\Users\\crist\\OneDrive\\Documents\\GitHub\\prevenda_updater\\icon.ico'],
@@ -236,8 +236,8 @@
  [],
  False,
  False,
- 1750871176,
- [('run.exe',
-   'c:\\Users\\crist\\OneDrive\\Documents\\GitHub\\prevenda_updater\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\run.exe',
+ 1750876700,
+ [('runw.exe',
+   'c:\\Users\\crist\\OneDrive\\Documents\\GitHub\\prevenda_updater\\.venv\\Lib\\site-packages\\PyInstaller\\bootloader\\Windows-64bit-intel\\runw.exe',
    'EXECUTABLE')],
  'C:\\Python313\\python313.dll')
