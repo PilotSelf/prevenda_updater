@@ -15,10 +15,17 @@ def find_and_kill_all(process_names):
     print(f"[DEBUG] PID do updater: {current_pid}")
     for proc in psutil.process_iter(['pid', 'name']):
         try:
-            print(f"[DEBUG] Encontrado processo: {proc.info}")
             if proc.info['name'] and proc.info['name'].lower() in [n.lower() for n in process_names]:
                 if proc.info['pid'] != current_pid:
-                    print(f"[DEBUG] Matando {proc.info['name']} (PID: {proc.info['pid']})")
+                    print(f"[DEBUG] Matando {proc.info['name']} (PID: {proc.info['pid']}) e subprocessos")
+                    # Mata todos os filhos primeiro
+                    children = proc.children(recursive=True)
+                    for child in children:
+                        try:
+                            print(f"[DEBUG] Matando filho {child.name()} (PID: {child.pid})")
+                            child.kill()
+                        except Exception as ce:
+                            print(f"[DEBUG] Erro ao matar filho: {ce}")
                     proc.kill()
                     found = True
         except Exception as e:
