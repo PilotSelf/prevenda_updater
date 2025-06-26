@@ -3,6 +3,9 @@ import sys
 import time
 import subprocess
 import psutil
+import threading
+import tkinter as tk
+import tkinter.ttk as ttk
 
 APP_NAMES = ["prevenda.exe", "flet.exe"]
 
@@ -54,7 +57,42 @@ def start_app(exe_name):
     except Exception as e:
         print(f"[DEBUG] Erro ao iniciar {exe_name}: {e}")
 
+def show_loading_window():
+    def disable_event():
+        pass  # Desabilita fechar/minimizar
+
+    root = tk.Tk()
+    root.title("")
+    root.resizable(False, False)
+    root.protocol("WM_DELETE_WINDOW", disable_event)
+    root.overrideredirect(True)  # Remove barra de título
+
+    # Centralizar janela
+    width, height = 300, 100
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width // 2) - (width // 2)
+    y = (screen_height // 2) - (height // 2)
+    root.geometry(f"{width}x{height}+{x}+{y}")
+
+    label = tk.Label(root, text="Atualizando...", font=("Arial", 14))
+    label.pack(pady=15)
+    pb = ttk.Progressbar(root, mode='indeterminate', length=200)
+    pb.pack(pady=5)
+    pb.start(10)
+
+    return root
+
 def main():
+    # Inicia janela de loading em thread separada
+    loading_window = [None]
+    def start_loading():
+        loading_window[0] = show_loading_window()
+        loading_window[0].mainloop()
+    t = threading.Thread(target=start_loading, daemon=True)
+    t.start()
+    time.sleep(0.2)  # Pequeno delay para garantir abertura da janela
+
     print("[DEBUG] Fechando instâncias antigas...")
     find_and_kill_all(APP_NAMES)
     print("[DEBUG] Aguardando fechamento completo...")
@@ -65,6 +103,9 @@ def main():
     else:
         print(f"[DEBUG] Não foi possível finalizar todos os processos: {APP_NAMES}")
 
+    # Fecha janela de loading
+    if loading_window[0]:
+        loading_window[0].destroy()
     print("[DEBUG] Script finalizado. Console ficará aberto por 10 segundos...")
     time.sleep(10)
 
